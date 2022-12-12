@@ -1,10 +1,12 @@
 import styled from "styled-components";
 
 export const StyledLoading = styled.div`
-  height: 90vh;
+  min-height: fit-content;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--grey-4);
 
   img {
     width: 50px;

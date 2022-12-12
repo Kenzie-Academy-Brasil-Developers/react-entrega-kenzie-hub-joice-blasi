@@ -6,8 +6,12 @@ import { Input } from "../Input";
 import { StyledButton } from "../../styles/buttons";
 import { StyledFormLogin } from "./style";
 import { StyledText } from "../../styles/typography";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
-export const FormLogin = ({ request, loading }) => {
+export const FormLogin = () => {
+  const { userLogin, loading } = useContext(UserContext);
+
   const {
     register,
     handleSubmit,
@@ -18,7 +22,7 @@ export const FormLogin = ({ request, loading }) => {
   });
 
   const submit = async (data) => {
-    await request(data);
+    await userLogin(data);
     reset();
   };
 

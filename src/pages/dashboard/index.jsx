@@ -1,28 +1,47 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import logo from "../../assets/img/logo.png";
-import { api } from "../../services/api";
 import { StyledButton } from "../../styles/buttons";
-import { toast } from "react-toastify";
 import { StyledDiv } from "./style";
 import { StyledText } from "../../styles/typography";
+import { api } from "../../services/api";
+import { toast } from "react-toastify";
 import { useEffect } from "react";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import { Loading } from "../../components/Loading";
+import trash from "../../assets/img/trash.png";
+import { TechContext } from "../../contexts/TechContext";
+import { ModalCreateTech } from "../../components/ModalCreateTech";
+import { ModalUpdateTech } from "../../components/ModalUpdateTech";
+import { useState } from "react";
 
-export const DashboardPage = ({ user, setUser }) => {
-  const navigate = useNavigate();
+export const DashboardPage = () => {
+  const { user, loading, cleanLocalStorage, navigate, setUser } =
+    useContext(UserContext);
+  const [element, setElement] = useState({});
+
+  const {
+    isModalCreateVisible,
+    setIsModalCreateVisible,
+    isModalUpdateVisible,
+    setIsModalUpdateVisible,
+    deleteTech,
+    techList,
+  } = useContext(TechContext);
   const params = useParams();
 
   useEffect(() => {
     const getProfile = async () => {
+      const token = JSON.parse(localStorage.getItem("@TOKEN"));
       try {
         const response = await api.get("/profile", {
           headers: {
-            Authorization:
-              "Bearer " + JSON.parse(localStorage.getItem("@TOKEN")),
+            Authorization: "Bearer " + token,
           },
         });
         if (response.data.name !== params.name) {
           navigate("/");
-          setUser("");
+          setUser(null);
           localStorage.removeItem("@TOKEN");
           localStorage.removeItem("@USERID");
         }
@@ -34,14 +53,10 @@ export const DashboardPage = ({ user, setUser }) => {
     getProfile();
   }, []);
 
-  const cleanLocalStorage = () => {
-    setUser("");
-    localStorage.removeItem("@TOKEN");
-    localStorage.removeItem("@USERID");
-    navigate("/");
-  };
-
-  return (
+  if (loading) {
+    return <Loading />;
+  }
+  return user ? (
     <StyledDiv>
       <div className="container">
         <nav>
@@ -70,14 +85,61 @@ export const DashboardPage = ({ user, setUser }) => {
       <div className="border"></div>
       <div className="container">
         <main>
-          <StyledText tag="h1" font="title1" color="#F8F9FA" className="title">
-            Que pena! Estamos em desenvolvimento :(
-          </StyledText>
-          <StyledText tag="h3" font="headline" color="#F8F9FA">
-            Nossa aplicação está em desenvolvimento, em breve teremos novidades
-          </StyledText>
+          <section>
+            <StyledText tag="h2" font="title2" color="#F8F9FA">
+              Tecnologias
+            </StyledText>
+            <StyledButton
+              type="button"
+              styleButton="default"
+              className="little-button"
+              onClick={() => setIsModalCreateVisible(true)}
+            >
+              +
+            </StyledButton>
+            {isModalCreateVisible ? <ModalCreateTech /> : ""}
+          </section>
+          <ul>
+            {techList.length ? (
+              techList.map((tech) => (
+                <li key={tech.id}>
+                  <div
+                    id={tech.id}
+                    onClick={() => {
+                      setElement(tech);
+                      setIsModalUpdateVisible(true);
+                    }}
+                  >
+                    {isModalUpdateVisible ? (
+                      <ModalUpdateTech item={element} />
+                    ) : (
+                      ""
+                    )}
+                    <StyledText tag="h3" font="title3" color="#F8F9FA">
+                      {tech.title}
+                    </StyledText>
+                    <StyledText tag="p" font="headline" color="#868E96">
+                      {tech.status}
+                    </StyledText>
+                  </div>
+                  <img
+                    src={trash}
+                    alt="Deletar"
+                    className="trash"
+                    onClick={() => deleteTech(tech.id)}
+                  />
+                </li>
+              ))
+            ) : (
+              <StyledText tag="h3" font="title3" color="#F8F9FA">
+                Nenhuma tecnologia cadastrada
+              </StyledText>
+            )}
+          </ul>
         </main>
       </div>
     </StyledDiv>
+  ) : (
+    <Navigate to="/" />
   );
 };

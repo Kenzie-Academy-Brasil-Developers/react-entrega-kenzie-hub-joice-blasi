@@ -47,5 +47,5 @@ export const RegisterSchema = yup.object().shape({
     .min(3, "O contato precisa ter pelo menos 3 caracteres")
     .max(100, "O contato pode ter no máximo 100 caracteres"),
 
-  course_module: yup.string().required("Campo obrigatório"),
+  course_module: yup.string().required("O módulo é obrigatório"),
 });
