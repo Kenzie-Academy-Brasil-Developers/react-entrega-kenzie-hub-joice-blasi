@@ -8,11 +8,13 @@ import { Input } from "../Input";
 import { UpdateTechSchema } from "./schema";
 import { StyledModal } from "./style";
 
-export const ModalUpdateTech = ({ item }) => {
-  const { setIsModalUpdateVisible, techList, deleteTech, updateTech } =
-    useContext(TechContext);
-
-  const tech = techList.find((tech) => tech.id === item.id);
+export const ModalUpdateTech = ({ item, selected, setElement }) => {
+  const {
+    isModalUpdateVisible,
+    setIsModalUpdateVisible,
+    deleteTech,
+    updateTech,
+  } = useContext(TechContext);
 
   const {
     register,
@@ -22,11 +24,25 @@ export const ModalUpdateTech = ({ item }) => {
     resolver: yupResolver(UpdateTechSchema),
   });
 
-  const submit = (data) => {
-    console.log(data);
+  function closeModal() {
+    setElement({ id: null });
+    console.log(isModalUpdateVisible);
+    setIsModalUpdateVisible(false);
+    console.log(isModalUpdateVisible);
+    if (isModalUpdateVisible === false) {
+      return null;
+    }
+  }
+
+  function submit(data) {
     updateTech(data, item.id);
     setIsModalUpdateVisible(false);
-  };
+    setElement({ id: null });
+  }
+
+  if (!selected || !isModalUpdateVisible) {
+    return "";
+  }
 
   return (
     <StyledModal>
@@ -41,7 +57,7 @@ export const ModalUpdateTech = ({ item }) => {
                 type="button"
                 styleButton="default"
                 className="close-button"
-                onClick={() => setIsModalUpdateVisible(false)}
+                onClick={() => closeModal()}
               >
                 X
               </StyledButton>
@@ -52,9 +68,8 @@ export const ModalUpdateTech = ({ item }) => {
               id="title"
               label="Nome da tecnologia"
               type="text"
-              placeholder="Nome da tecnologia"
+              placeholder={item.title}
               disable={true}
-              defaultValue={item.title}
             />
 
             <label htmlFor="status">Status</label>
@@ -81,7 +96,7 @@ export const ModalUpdateTech = ({ item }) => {
               <StyledButton
                 type="button"
                 styleButton="default"
-                onClick={() => deleteTech(tech.id)}
+                onClick={() => deleteTech(item.id)}
               >
                 Excluir
               </StyledButton>

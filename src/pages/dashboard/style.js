@@ -97,4 +97,10 @@ export const StyledDiv = styled.div`
       display: block;
     }
   }
+
+  @media (min-width: 820px) {
+    .desktop {
+      max-width: 780px;
+    }
+  }
 `;

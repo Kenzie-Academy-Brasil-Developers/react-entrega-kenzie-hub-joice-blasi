@@ -12,6 +12,7 @@ export const TechProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [techList, setTechList] = useState([]);
   const token = JSON.parse(localStorage.getItem("@TOKEN"));
+  console.log(isModalUpdateVisible);
 
   useEffect(() => {
     const getProfile = async () => {
@@ -30,18 +31,22 @@ export const TechProvider = ({ children }) => {
       }
     };
     getProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [techList, setTechList]);
+  }, []);
 
   const createTech = async (data) => {
     try {
       setLoading(true);
-      const response = await api.post("users/techs", data, {
+      await api.post("users/techs", data, {
         headers: {
           Authorization: "Bearer " + token,
         },
       });
-      setTechList(...techList, response);
+      const list = await api.get("/profile", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setTechList(list.data.techs);
       toast.success("Tecnologia criada com sucesso");
     } catch (error) {
       toast.error("Erro ao criar tecnologia");
@@ -62,7 +67,7 @@ export const TechProvider = ({ children }) => {
         return tech.id !== id;
       });
       setTechList(filtered);
-      toast.success("Tecnologia removida com sucesso");
+      toast.error("Tecnologia removida com sucesso");
     } catch (error) {
       toast.error("Erro ao deletar");
     } finally {
@@ -73,12 +78,18 @@ export const TechProvider = ({ children }) => {
   const updateTech = async (data, id) => {
     try {
       setLoading(true);
-      const response = await api.put(`/users/techs/${id}`, data, {
+      await api.put(`/users/techs/${id}`, data, {
         headers: {
           Authorization: "Bearer " + token,
         },
       });
-      setTechList(...techList, response);
+      const response = await api.get("/profile", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setTechList(response.data.techs);
+      toast.success("Tecnologia atualizada com sucesso");
     } catch (error) {
       toast.error("Erro ao atualizar tecnologia");
     } finally {

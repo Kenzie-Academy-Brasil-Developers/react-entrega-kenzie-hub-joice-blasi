@@ -56,9 +56,10 @@ export const DashboardPage = () => {
   if (loading) {
     return <Loading />;
   }
+
   return user ? (
     <StyledDiv>
-      <div className="container">
+      <div className="container desktop">
         <nav>
           <img src={logo} alt="Logo KenzieHub" />
           <StyledButton
@@ -72,7 +73,7 @@ export const DashboardPage = () => {
         </nav>
       </div>
       <div className="border"></div>
-      <div className="container">
+      <div className="container desktop">
         <header>
           <StyledText tag="h1" font="title1" color="#F8F9FA">
             Olá, {user.name}
@@ -83,7 +84,7 @@ export const DashboardPage = () => {
         </header>
       </div>
       <div className="border"></div>
-      <div className="container">
+      <div className="container desktop">
         <main>
           <section>
             <StyledText tag="h2" font="title2" color="#F8F9FA">
@@ -100,7 +101,7 @@ export const DashboardPage = () => {
             {isModalCreateVisible ? <ModalCreateTech /> : ""}
           </section>
           <ul>
-            {techList.length ? (
+            {techList ? (
               techList.map((tech) => (
                 <li key={tech.id}>
                   <div
@@ -110,11 +111,15 @@ export const DashboardPage = () => {
                       setIsModalUpdateVisible(true);
                     }}
                   >
-                    {isModalUpdateVisible ? (
-                      <ModalUpdateTech item={element} />
+                    <ModalUpdateTech
+                      item={tech}
+                      selected={element.id === tech.id}
+                      setElement={setElement}
+                    />
+                    {/* {isModalUpdateVisible ? (
                     ) : (
                       ""
-                    )}
+                    )} */}
                     <StyledText tag="h3" font="title3" color="#F8F9FA">
                       {tech.title}
                     </StyledText>
