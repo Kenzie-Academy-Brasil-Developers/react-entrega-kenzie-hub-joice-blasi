@@ -4,7 +4,7 @@ import { RegisterPage } from "../pages/register";
 import { DashboardPage } from "../pages/dashboard";
 import { NotFound } from "../pages/notFound";
 
-export const RoutesComponent = ({ user, setUser }) => {
+export const RoutesComponent = () => {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
