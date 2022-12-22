@@ -98,7 +98,8 @@ export const DashboardPage = () => {
             >
               +
             </StyledButton>
-            {isModalCreateVisible ? <ModalCreateTech /> : ""}
+            {isModalCreateVisible && <ModalCreateTech />}
+            {isModalUpdateVisible && <ModalUpdateTech element={element} />}
           </section>
           <ul>
             {techList ? (
@@ -111,15 +112,6 @@ export const DashboardPage = () => {
                       setIsModalUpdateVisible(true);
                     }}
                   >
-                    <ModalUpdateTech
-                      item={tech}
-                      selected={element.id === tech.id}
-                      setElement={setElement}
-                    />
-                    {/* {isModalUpdateVisible ? (
-                    ) : (
-                      ""
-                    )} */}
                     <StyledText tag="h3" font="title3" color="#F8F9FA">
                       {tech.title}
                     </StyledText>

@@ -12,7 +12,6 @@ export const TechProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [techList, setTechList] = useState([]);
   const token = JSON.parse(localStorage.getItem("@TOKEN"));
-  console.log(isModalUpdateVisible);
 
   useEffect(() => {
     const getProfile = async () => {
